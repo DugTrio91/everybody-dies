@@ -1,28 +1,21 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <h1>Everybody Dies</h1>
+    <component :is="activeComponent"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+  import Players from './components/players/Players.vue';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld,
-  },
-};
+  export default {
+    computed: {
+      activeComponent() {
+        return 'players';
+      },
+    },
+    components: {
+      Players,
+    },
+  };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
