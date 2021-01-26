@@ -12,6 +12,7 @@
     <button @click="toggleNewPlayerInput">
       {{ newPlayerInputVisible ? 'Cancel' : 'New Player' }}
     </button>
+    <button @click="closePlayers">Close</button>
   </div>
 </template>
 
@@ -52,6 +53,9 @@
         this.toggleNewPlayerInput()
         this.newPlayerName = '';
       },
+      closePlayers() {
+        this.$emit('players-closed');
+      }
     },
     components: {
       Player,
