@@ -1,5 +1,6 @@
 const state = {
   players: [],
+  currentPlayer: 0,
 };
 
 const mutations = {
@@ -15,6 +16,13 @@ const mutations = {
 
     state.players.splice(state.players.indexOf(player), 1);
   },
+  'NEXT_PLAYER'(state) {
+    if ((state.currentPlayer + 1) >= state.players.length) {
+      state.currentPlayer = 0;
+    } else {
+      state.currentPlayer++;
+    }
+  }
 };
 
 const actions = {
@@ -24,10 +32,14 @@ const actions = {
   deletePlayer: ({ commit }, player) => {
     commit('DELETE_PLAYER', player);
   },
+  nextPlayer: ({ commit }) => {
+    commit('NEXT_PLAYER')
+  }
 };
 
 const getters = {
   players: state => state.players,
+  currentPlayer: state => state.players[state.currentPlayer],
 }
 
 export default {
