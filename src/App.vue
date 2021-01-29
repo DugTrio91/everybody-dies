@@ -37,6 +37,9 @@
       ...mapActions([
         'startGame',
         'endGame',
+        'resetPlayer',
+        'deactivateMultiplier',
+        'unsetMultiplierToPlayer',
       ]),
       created() {
         console.log(this.currentPlayer);
@@ -53,7 +56,12 @@
       },
       closeGameAndGoHome() {
         this.endGame();
+        this.resetPlayer();
+        this.deactivateMultiplier()
         this.selectComponent('splash');
+        this.players.forEach(player => {
+          this.unsetMultiplierToPlayer(player)
+        })
       },
       selectComponent(component) {
         this.component = component;
