@@ -1,12 +1,13 @@
 const state = {
   gameStarted: false,
-  multiplierActive: false,
+  multiplierTurns: 0,
   cards: [
     'multiplier',
     'avalanche',
     'alcoholic',
     'donator',
     'randomiser',
+    'percentile',
   ],
 };
 
@@ -14,8 +15,8 @@ const mutations = {
   'TOGGLE_GAME'(state, started) {
     state.gameStarted = started;
   },
-  'TOGGLE_MULTIPLIER'(state, started) {
-    state.gameStarted = started;
+  'TOGGLE_MULTIPLIER'(state, turns) {
+    state.multiplierTurns = turns;
   },
 };
 
@@ -26,17 +27,18 @@ const actions = {
   endGame: ({ commit }) => {
     commit('TOGGLE_GAME', false);
   },
-  activateMultiplier: ({ commit }) => {
-    commit('TOGGLE_MULTIPLIER', true);
+  activateMultiplier: ({ commit }, turns ) => {
+    commit('TOGGLE_MULTIPLIER', turns);
   },
   deactivateMultiplier: ({ commit }) => {
-    commit('TOGGLE_MULTIPLIER', false);
+    commit('TOGGLE_MULTIPLIER', 0);
   },
 };
 
 const getters = {
   status: state => state.gameStarted,
   cards: state => state.cards,
+  multiplierActive: state => state.multiplierTurns > 0,
 };
 
 export default {
