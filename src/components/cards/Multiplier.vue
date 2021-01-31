@@ -16,7 +16,7 @@
       ]),
     },
     created() {
-      this.activateMultiplier(this.players.length);
+      this.activateMultiplier(this.players.length + 1);
       this.setMultiplierToPlayer(this.currentPlayer);
     },
     methods: {
