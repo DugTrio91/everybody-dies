@@ -2,17 +2,26 @@
   <div>
     <h1>The Randomiser</h1>
     <p v-if="loading">Please wait while your fate is decided...</p>
-    <p v-if="!loading && rule">{{ rule }}</p>
+    <p v-if="!loading && rule">
+      {{ ruleAffectsPlayerOnly }}
+      {{ ruleAffectsPlayerOnly ? rule.instruction.toLowerCase() : rule.instruction }}</p>
     <p v-if="multiplier">
-      If this includes whoever has the multiplier, take {{ multipliedDrinks }} drink(s)!
+      If this affects whoever has the multiplier, take {{ multipliedDrinks }} drink(s)!
     </p>
-    <button @click="dismiss">Dismiss</button>
+    <donator-form
+      :drinks="3"
+      @dismissed="dismiss"
+      v-if="donator"
+    />
+    <button v-if="!donator" @click="dismiss">Dismiss</button>
   </div>
 </template>
 
 <script>
   import { randomiser } from '@/rules';
   import { dice } from '@/mixins/dice';
+  import DonatorForm from '../DonatorForm.vue';
+  import { mapGetters } from 'vuex';
 
   export default {
     data() {
@@ -22,20 +31,29 @@
         rules: randomiser,
         multiplier: false,
         multipliedDrinks: 0,
+        donator: false,
       };
     },
     created() {
       this.toggleLoading();
       this.selectRule();
     },
+    computed: {
+      ...mapGetters([
+        'currentPlayer',
+      ]),
+      ruleAffectsPlayerOnly() {
+        return this.rule.affects === 'player' ? `${this.currentPlayer.name},` : null;
+      },
+    },
     methods: {
       selectRule() {
         setTimeout(() => {
-          const rule = this.rules[dice.methods.roll(this.rules.length)];
-          this.rule = rule.instruction;
-          this.multiply(rule);
+          this.rule = this.rules[dice.methods.roll(this.rules.length) - 1];
+          this.donatable(this.rule);
+          this.multiply(this.rule);
           this.toggleLoading();
-        }, 500);
+        }, 1500);
       },
       toggleLoading() {
         this.loading = !this.loading;
@@ -47,10 +65,25 @@
         if (!rule.multipliable) {
           return false;
         }
-        this.multipliedDrinks = dice.methods.roll(4) + 1;
-        this.multiplier = true;
+
+        if ((rule.multipliable && this.currentPlayer.multiplier) && rule.affects === 'player') {
+          console.log('here');
+          rule.instruction = rule.instruction.replace(/[0-9]/g, dice.methods.multiply(rule.drinks));
+        } else {
+          this.multipliedDrinks = dice.methods.multiply(rule.drinks);
+          this.multiplier = true;
+        }
+      },
+      donatable(rule) {
+        if (!rule.donatable) {
+          return false;
+        }
+        this.donator = true;
       },
     },
     mixins: [dice],
+    components: {
+      DonatorForm,
+    },
   };
 </script>
