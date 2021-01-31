@@ -9,13 +9,17 @@
     >
       {{ card }}
     </button>
-    <component :is="selectedCard" @dismissed="endTurn"/>
+    <component :is="selectedCard" @dismissed="endTurn" @testing="console.log('TEST')"/>
   </div>
 </template>
 
 <script>
   import Multiplier from './cards/Multiplier.vue';
   import Randomiser from './cards/Randomiser.vue';
+  import Alcoholic from './cards/Alcoholic.vue';
+  import Percentile from './cards/Percentile.vue';
+  import Avalanche from './cards/Avalanche.vue';
+  import Donator from './cards/Donator.vue';
 
   import { mapActions, mapGetters } from 'vuex';
 
@@ -68,6 +72,10 @@
     components: {
       Multiplier,
       Randomiser,
+      Alcoholic,
+      Percentile,
+      Avalanche,
+      Donator,
     },
   };
 </script>
@@ -76,6 +84,7 @@
   .l-card-selection {
     &__card {
       height: 100px;
+      width: 75px;
     }
   }
 </style>
