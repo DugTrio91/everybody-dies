@@ -41,9 +41,6 @@
         'deactivateMultiplier',
         'unsetMultiplierToPlayer',
       ]),
-      created() {
-        console.log(this.currentPlayer);
-      },
       checkPlayersAndStartGame() {
         if (this.players.length > 0) {
           this.startGame();
