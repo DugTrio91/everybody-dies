@@ -1,19 +1,25 @@
 <template>
   <div>
     <h1>The Randomiser</h1>
-    <p v-if="loading">Please wait while your fate is decided...</p>
+    <loading :player="currentPlayer.name" v-if="loading"/>
     <p v-if="!loading && rule">
       {{ ruleAffectsPlayerOnly }}
       {{ ruleAffectsPlayerOnly ? rule.instruction.toLowerCase() : rule.instruction }}</p>
     <p v-if="multiplier">
-      If this affects whoever has the multiplier, take {{ multipliedDrinks }} drink(s)!
+      If this affects whoever has the multiplier, take {{ multipliedDrinks | readableDrinks }}!
     </p>
     <donator-form
       :drinks="3"
       @dismissed="dismiss"
       v-if="donator"
     />
-    <button v-if="!donator" @click="dismiss">Dismiss</button>
+    <dismiss
+      v-if="!donator"
+      @click="dismiss"
+      :loading="loading"
+    >
+      Dismiss
+    </dismiss>
   </div>
 </template>
 
@@ -22,6 +28,8 @@
   import { dice } from '@/mixins/dice';
   import DonatorForm from '../DonatorForm.vue';
   import { mapGetters } from 'vuex';
+  import Dismiss from '@/components/controls/Dismiss';
+  import Loading from '@/components/Loading';
 
   export default {
     data() {
@@ -53,7 +61,7 @@
           this.donatable(this.rule);
           this.multiply(this.rule);
           this.toggleLoading();
-        }, 1500);
+        }, this.loadingTimer());
       },
       toggleLoading() {
         this.loading = !this.loading;
@@ -67,7 +75,6 @@
         }
 
         if ((rule.multipliable && this.currentPlayer.multiplier) && rule.affects === 'player') {
-          console.log('here');
           rule.instruction = rule.instruction.replace(/[0-9]/g, dice.methods.multiply(rule.drinks));
         } else {
           this.multipliedDrinks = dice.methods.multiply(rule.drinks);
@@ -84,6 +91,8 @@
     mixins: [dice],
     components: {
       DonatorForm,
+      Dismiss,
+      Loading,
     },
   };
 </script>

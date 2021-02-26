@@ -1,14 +1,19 @@
 <template>
   <div>
     <h1>The Donator</h1>
-    <p v-if="loading">{{ currentPlayer.name }}, please wait while your fate is decided...</p>
+    <loading :player="currentPlayer.name" v-if="loading"/>
     <div v-if="!loading">
       <p>
-        {{ currentPlayer.name }}, the donator has given you {{ drinks }} to donate!
-        <br>
+        {{ currentPlayer.name }}, you've been given {{ drinks | readableDrinks }} to donate!
+      </p>
+      <p v-if="!donated">
         Select who will you give them to (You can't donate more than 2 drinks to a player!):
       </p>
-      <donator-form @dismissed="dismiss" :drinks="drinks"/>
+      <donator-form
+        @dismissed="dismiss"
+        @donated="donate"
+        :drinks="drinks"
+      />
     </div>
   </div>
 </template>
@@ -16,12 +21,14 @@
   import DonatorForm from '../../components/DonatorForm';
   import { mapGetters } from 'vuex';
   import { dice } from '@/mixins/dice';
+  import Loading from '@/components/Loading';
 
   export default {
     data() {
       return {
         loading: true,
         drinks: 0,
+        donated: false,
       };
     },
     created() {
@@ -29,7 +36,7 @@
         const roll = dice.methods.roll(6);
         this.drinks = roll > this.players.length ? this.players.length : roll;
         this.loading = false;
-      }, 1500);
+      }, this.loadingTimer());
     },
     computed: {
       ...mapGetters([
@@ -40,10 +47,15 @@
     methods: {
       dismiss() {
         this.$emit('dismissed');
+        this.donated = false;
+      },
+      donate() {
+        this.donated = true;
       },
     },
     components: {
       DonatorForm,
+      Loading,
     },
   };
 </script>

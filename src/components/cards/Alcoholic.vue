@@ -1,15 +1,17 @@
 <template>
   <div>
     <h1>The Alcoholic</h1>
-    <p v-if="loading">{{ currentPlayer.name }}, please wait while your fate is decided...</p>
-    <p v-if="!loading">{{ currentPlayer.name }}, you must take {{ drinks }} drink(s)!</p>
-    <button @click="dismiss">Dismiss</button>
+    <loading :player="currentPlayer.name" v-if="loading"/>
+    <p v-if="!loading">{{ currentPlayer.name }}, you must take {{ drinks | readableDrinks }}!</p>
+    <dismiss :loading="loading" @click="dismiss">Dismiss</dismiss>
   </div>
 </template>
 
 <script>
   import { dice } from '@/mixins/dice';
   import { mapGetters } from 'vuex';
+  import Dismiss from '@/components/controls/Dismiss';
+  import Loading from '@/components/Loading';
 
   export default {
     data() {
@@ -27,7 +29,7 @@
       setTimeout(() => {
         this.drinks = dice.methods.roll(4, this.currentPlayer.multiplier);
         this.toggleLoading();
-      }, 1500);
+      }, this.loadingTimer());
     },
     methods: {
       dismiss() {
@@ -36,6 +38,10 @@
       toggleLoading() {
         this.loading = !this.loading;
       },
+    },
+    components: {
+      Dismiss,
+      Loading,
     },
   };
 </script>

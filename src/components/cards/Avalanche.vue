@@ -1,22 +1,24 @@
 <template>
   <div>
     <h1>The Avalanche</h1>
-    <p v-if="loading">{{ currentPlayer.name }}, please wait while your fate is decided...</p>
-    <p v-if="!loading">{{ currentPlayer.name }}, the avalanche has hit {{ hits }} time(s)!</p>
+    <loading :player="currentPlayer.name" v-if="loading"/>
+    <p v-if="!loading">The avalanche has hit {{ hits }} {{ hits > 1 ? 'times' : 'time' }}!</p>
     <ul>
       <li v-for="(player, index) in playersAndDrinks" :key="index">
         {{ player.player.name }},
         <span v-if="player.player.multiplier">you have the multiplier, so</span>
-        you must take {{ player.drinks }} drink(s)!
+        you must take {{ player.drinks | readableDrinks }}!
       </li>
     </ul>
-    <button @click="dismiss">Dismiss</button>
+    <dismiss :loading="loading" @click="dismiss">Dismiss</dismiss>
   </div>
 </template>
 
 <script>
   import { dice } from '@/mixins/dice';
   import { mapGetters } from 'vuex';
+  import Dismiss from '@/components/controls/Dismiss';
+  import Loading from '@/components/Loading';
 
   export default {
     data() {
@@ -37,7 +39,7 @@
         this.hits = dice.methods.roll(6);
         this.startAvalanche();
         this.toggleLoading();
-      }, 1500);
+      }, this.loadingTimer());
     },
     methods: {
       startAvalanche() {
@@ -88,6 +90,10 @@
       toggleLoading() {
         this.loading = !this.loading;
       },
+    },
+    components: {
+      Dismiss,
+      Loading,
     },
   };
 </script>
