@@ -2,7 +2,7 @@
   <div class="loading">
     <img
       class="loading__image"
-      src="../assets/loading.gif"
+      src="../../assets/loading.gif"
       alt=""
     >
     <p class="loading__text">

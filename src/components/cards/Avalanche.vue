@@ -18,7 +18,7 @@
   import { dice } from '@/mixins/dice';
   import { mapGetters } from 'vuex';
   import Dismiss from '@/components/controls/Dismiss';
-  import Loading from '@/components/Loading';
+  import Loading from '@/components/controls/Loading';
 
   export default {
     data() {

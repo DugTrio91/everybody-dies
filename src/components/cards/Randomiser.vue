@@ -26,10 +26,10 @@
 <script>
   import { randomiser } from '@/rules';
   import { dice } from '@/mixins/dice';
-  import DonatorForm from '../DonatorForm.vue';
+  import DonatorForm from '../form/DonatorForm.vue';
   import { mapGetters } from 'vuex';
   import Dismiss from '@/components/controls/Dismiss';
-  import Loading from '@/components/Loading';
+  import Loading from '@/components/controls/Loading';
 
   export default {
     data() {

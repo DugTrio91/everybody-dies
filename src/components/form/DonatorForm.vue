@@ -119,7 +119,7 @@
   };
 </script>
 <style lang="scss">
-  @import "../scss/app";
+  @import "../../scss/app";
 
   .l-donator-form {
 

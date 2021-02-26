@@ -18,10 +18,10 @@
   </div>
 </template>
 <script>
-  import DonatorForm from '../../components/DonatorForm';
+  import DonatorForm from '../form/DonatorForm';
   import { mapGetters } from 'vuex';
   import { dice } from '@/mixins/dice';
-  import Loading from '@/components/Loading';
+  import Loading from '@/components/controls/Loading';
 
   export default {
     data() {
