@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "reset-css": "^5.0.1",
     "uniqid": "^5.2.0",
     "vue": "^2.6.11",
     "vuex": "^3.6.0"
