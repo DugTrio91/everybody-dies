@@ -1,15 +1,20 @@
 <template>
   <div class="l-card-selection card-selection">
-    <button
-      class="l-card-selection__card card-selection__card"
-      v-for="(card, index) in shuffledCards"
-      :key="index"
-      @click="revealCard(card)"
-      :disabled="selectedCard"
-    >
-      {{ card }}
-    </button>
-    <component :is="selectedCard" @dismissed="endTurn" @testing="console.log('TEST')"/>
+    <h2>{{ currentPlayer.name }}, choose a card</h2>
+    <div class="l-card-selection__cards card-selection__cards">
+      <card
+        v-for="(card, index) in shuffledCards"
+        :card="card"
+        :selected="selectedCard"
+        :key="index"
+        @click="selectCard(card)"
+      />
+    </div>
+    <component
+      class="l-card-selection__selected"
+      :is="selectedCard"
+      @dismissed="endTurn"
+    />
   </div>
 </template>
 
@@ -20,6 +25,7 @@
   import Percentile from './cards/Percentile.vue';
   import Avalanche from './cards/Avalanche.vue';
   import Donator from './cards/Donator.vue';
+  import Card from './Card.vue';
 
   import { mapActions, mapGetters } from 'vuex';
 
@@ -33,6 +39,7 @@
     computed: {
       ...mapGetters([
         'cards',
+        'currentPlayer',
         'multiplierActive',
       ]),
       shuffledCards() {
@@ -46,6 +53,9 @@
       ...mapActions([
         'nextPlayer',
       ]),
+      selectCard(card) {
+        this.selectedCard = card;
+      },
       shuffle() {
         return this.filteredCards.sort(() => Math.random() - 0.5);
       },
@@ -56,14 +66,15 @@
           this.filteredCards = this.cards.filter(card => card !== 'multiplier');
         }
       },
-      revealCard(card) {
-        this.selectedCard = card;
-      },
       endTurn() {
-        this.nextPlayer();
-        this.removeMultiplierFromDeckIfActive();
-        this.shuffle();
         this.showAllCards();
+
+        // Allow transition to finish before shuffling
+        setTimeout(() => {
+          this.shuffle();
+          this.removeMultiplierFromDeckIfActive();
+          this.nextPlayer();
+        }, 600);
       },
       showAllCards() {
         this.selectedCard = null;
@@ -76,15 +87,29 @@
       Percentile,
       Avalanche,
       Donator,
+      Card,
     },
   };
 </script>
 
 <style lang="scss">
+  @import "../scss/app";
+
   .l-card-selection {
-    &__card {
-      height: 100px;
-      width: 75px;
+    position: relative;
+    text-align: center;
+
+    &__cards {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__selected {
+      position: relative;
+      z-index: 3;
+      margin: 2rem auto 0;
+      max-width: 45rem;
     }
   }
 </style>
