@@ -2,46 +2,60 @@
   <div class="l-donator-form donator-form">
     <slot class="l-donator-form__slot donator-form__slot"/>
     <div v-if="!donated">
-      <p>{{ drinksToAssign }} drink(s) remaining!</p>
+      <p>{{ drinksToAssign | readableDrinks }} remaining!</p>
       <div
         class="l-donator-form__player donator-form__player"
         v-for="player in playersExceptCurrent"
         :key="player.id"
       >
         <p class="l-donator-form__player-name donator-form__player-name">{{ player.name }}:</p>
-        <p class="l-donator-form__player-drinks donator-form__player-drinks">
-          {{ player.donatedDrinks }}
-        </p>
-        <button
-          class="l-donator-form__player-button donator-form__player-button button button--plus"
-          @click="assignDrinks(player)"
-          :disabled="disableAssignDrinks(player)"
-        >
-          +
-        </button>
-        <button
-          class="l-donator-form__player-button donator-form__player-button button button--minus"
-          @click="unassignDrinks(player)"
-          :disabled="disableUnassignDrinks(player)"
-        >
-          -
-        </button>
+        <div class="l-donator-form__player-container donator-form__player-container">
+          <action
+            class="l-donator-form__player-button donator-form__player-button button button--plus"
+            @click="assignDrinks(player)"
+            :disable="disableAssignDrinks(player)"
+          >
+            +
+          </action>
+          <p class="l-donator-form__player-drinks donator-form__player-drinks">
+            {{ player.donatedDrinks }}
+          </p>
+          <action
+            class="l-donator-form__player-button donator-form__player-button button button--minus"
+            @click="unassignDrinks(player)"
+            :disable="disableUnassignDrinks(player)"
+          >
+            -
+          </action>
+        </div>
       </div>
     </div>
     <ul v-if="donated">
       <li v-for="player in playersExceptCurrent" :key="player.id">
+        <span v-if="player.donatedDrinks > 0">
         {{ player.name }},
-        <span v-if="player.multiplier">becuase you have the multiplier,</span>
-        you must take {{ player.donatedDrinks }} drink(s)!
+        <span v-if="player.multiplier">because you have the multiplier,</span>
+        you must take {{ player.donatedDrinks | readableDrinks }}!
+        </span>
       </li>
     </ul>
-    <button v-if="!donated" :disabled="drinksToAssign !== 0" @click="donate">Donate</button>
-    <button v-if="donated" @click="dismiss">Dismiss</button>
+    <button
+      class="l-donator-form__donate donator-form__donate"
+      :class="{ 'disabled' : drinksToAssign !== 0 }"
+      v-if="!donated"
+      :disabled="drinksToAssign !== 0"
+      @click="donate"
+    >
+      Donate
+    </button>
+    <dismiss v-if="donated" @click="dismiss">Dismiss</dismiss>
   </div>
 </template>
 <script>
   import { mapGetters } from 'vuex';
   import { dice } from '@/mixins/dice';
+  import Dismiss from '@/components/controls/Dismiss';
+  import Action from '@/components/controls/Action';
 
   export default {
     data() {
@@ -87,28 +101,64 @@
       },
       donate() {
         this.donated = true;
-        this.playersExceptCurrent.forEach((player, i) => {
+        this.playersExceptCurrent.forEach((player) => {
           if (player.multiplier) {
             player.donatedDrinks = dice.methods.multiply(player.donatedDrinks);
           }
-
-          if (player.donatedDrinks === 0) {
-            this.playersExceptCurrent.splice(i, 1);
-          }
         });
+        this.$emit('donated');
       },
       dismiss() {
         this.$emit('dismissed');
       },
     },
+    components: {
+      Dismiss,
+      Action,
+    },
   };
 </script>
 <style lang="scss">
+  @import "../scss/app";
+
   .l-donator-form {
+
     &__player {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
+      display: inline-block;
+      margin: 1rem;
+
+      &-container {
+        display: flex;
+        align-items: center;
+      }
+
+      &-drinks {
+        margin: 0;
+        width: 3rem;
+      }
+    }
+
+    &__donate {
+      height: 6rem;
+      width: 13rem;
+      margin-top: 2rem;
+      background: url('~@/assets/buttons/button-dismiss.png') center no-repeat;
+      background-size: contain;
+      outline: none;
+      border: 0;
+      font-family: $ed-body-font;
+      font-size: 1.5rem;
+      color: #fff;
+
+      &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      &:not(.disabled):hover {
+        background: url('~@/assets/buttons/button-dismiss-hover.png') center no-repeat;
+        background-size: contain;
+      }
     }
   }
 </style>
