@@ -1,17 +1,24 @@
 <template>
-  <div>
-    <h1>Everybody Dies</h1>
-    <h2 v-if="status">Current player: {{ currentPlayer.name }}</h2>
-    <div v-if="!status && component === 'splash'">
-      <button @click="selectComponent('players')">Players</button>
-      <button @click="checkPlayersAndStartGame">Start Game</button>
-    </div>
-    <button v-else-if="status" @click="closeGameAndGoHome">End Game</button>
-    <component
-      :is="component"
-      @players-closed="selectComponent('splash')"
+  <main class="l-main main">
+    <button
+      v-if="!status && component === 'splash'"
+      @click="selectComponent('players')"
+      class="btn btn-players btn--fixed-left"
     />
-  </div>
+    <button
+      v-else-if="status"
+      @click="closeGameAndGoHome"
+      class="btn btn-end btn--fixed-right"
+    />
+    <transition name="main__component" mode="out-in">
+      <component
+        :is="component"
+        @players-closed="selectComponent('splash')"
+        @start="checkPlayersAndStartGame"
+      />
+    </transition>
+    <small class="version">Version 0.0.1</small>
+  </main>
 </template>
 
 <script>
@@ -54,11 +61,11 @@
       closeGameAndGoHome() {
         this.endGame();
         this.resetPlayer();
-        this.deactivateMultiplier()
+        this.deactivateMultiplier();
         this.selectComponent('splash');
         this.players.forEach(player => {
-          this.unsetMultiplierToPlayer(player)
-        })
+          this.unsetMultiplierToPlayer(player);
+        });
       },
       selectComponent(component) {
         this.component = component;
@@ -71,3 +78,36 @@
     },
   };
 </script>
+<style lang="scss">
+  @import "./scss/app";
+
+  .l-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .main {
+    background: url($ed-main-background) center no-repeat;
+    background-size: cover;
+
+    &__component-enter-active {
+      animation: fade-in 0.5s ease both;
+    }
+
+    &__component-leave-active {
+      animation: fade-out 0.5s ease both;
+    }
+  }
+
+  .version {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    color: #fff;
+    font-weight: 500;
+    font-family: sans-serif;
+  }
+</style>
