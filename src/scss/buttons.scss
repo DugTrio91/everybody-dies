@@ -1,0 +1,64 @@
+.btn {
+  border: 0;
+  padding: 0;
+  font-family: $ed-body-font;
+  outline: none;
+
+  &--fixed-left {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+  }
+
+  &--fixed-right {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    z-index: 99;
+  }
+
+  &-start {
+    height: 6rem;
+    width: 13rem;
+    background: url('~@/assets/buttons/button-cta.png') center no-repeat;
+    background-size: contain;
+    outline: none;
+    font-size: 1.5rem;
+    color: #fff;
+
+    &:hover {
+      background: url('~@/assets/buttons/button-cta-hover.png') center no-repeat;
+      background-size: contain;
+    }
+  }
+
+  &-players {
+    height: 5rem;
+    width: 5rem;
+    background: url('~@/assets/buttons/button-players.png') center no-repeat;
+    background-size: contain;
+    outline: none;
+    font-size: 1.5rem;
+    color: #fff;
+
+    &:hover {
+      background: url('~@/assets/buttons/button-players-hover.png') center no-repeat;
+      background-size: contain;
+    }
+  }
+
+  &-end {
+    height: 5rem;
+    width: 5rem;
+    background: url('~@/assets/buttons/button-end.png') center no-repeat;
+    background-size: contain;
+    outline: none;
+    font-size: 1.5rem;
+    color: #fff;
+
+    &:hover {
+      background: url('~@/assets/buttons/button-end-hover.png') center no-repeat;
+      background-size: contain;
+    }
+  }
+}
